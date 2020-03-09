@@ -23,7 +23,7 @@
 
 + (UNNotificationAction *)UNMutableUserNotificationAction:(id)json {
     UNNotificationAction* action;
-    NSDictionary<NSString *, id> *details = [self NSDictionary:json];
+    NSDictionary<NSString *, id> *details = [[self NSDictionary:json] objectForKey:@"payload"];
     
     if (details[@"textInput"]) {
         action = [UNTextInputNotificationAction actionWithIdentifier:details[@"identifier"] title:details[@"title"] options:[RCTConvert UNUserNotificationActionOptions:details] textInputButtonTitle:details[@"textInput"][@"buttonTitle"] textInputPlaceholder:details[@"textInput"][@"placeholder"]];
