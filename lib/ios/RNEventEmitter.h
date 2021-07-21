@@ -4,8 +4,10 @@ static NSString* const RNRegistered                  = @"remoteNotificationsRegi
 static NSString* const RNRegistrationFailed          = @"remoteNotificationsRegistrationFailed";
 static NSString* const RNPushKitRegistered           = @"pushKitRegistered";
 static NSString* const RNNotificationReceived        = @"notificationReceived";
+static NSString* const RNNotificationReceivedBackground = @"notificationReceivedBackground";
 static NSString* const RNNotificationOpened          = @"notificationOpened";
 static NSString* const RNPushKitNotificationReceived = @"pushKitNotificationReceived";
+static NSString* const RNAppNotificationSettingsLinked = @"appNotificationSettingsLinked";
 
 
 @interface RNEventEmitter : RCTEventEmitter <RCTBridgeModule>

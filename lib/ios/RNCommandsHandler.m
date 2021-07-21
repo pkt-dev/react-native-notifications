@@ -13,8 +13,8 @@
     return self;
 }
 
-- (void)requestPermissions {
-    [_notificationCenter requestPermissions];
+- (void)requestPermissions:(NSDictionary *)options {
+    [_notificationCenter requestPermissions:options];
 }
 
 - (void)setCategories:(NSArray *)categories {
@@ -22,7 +22,9 @@
 }
 
 - (void)getInitialNotification:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
-    resolve([[RNNotificationsStore sharedInstance] initialNotification]);
+  NSDictionary* initialNotification = [[RNNotificationsStore sharedInstance] initialNotification];
+  [[RNNotificationsStore sharedInstance] setInitialNotification:nil];
+  resolve(initialNotification);
 }
 
 - (void)finishHandlingAction:(NSString *)completionKey {
@@ -31,6 +33,10 @@
 
 - (void)finishPresentingNotification:(NSString *)completionKey presentingOptions:(NSDictionary *)presentingOptions {
     [[RNNotificationsStore sharedInstance] completePresentation:completionKey withPresentationOptions:[RCTConvert UNNotificationPresentationOptions:presentingOptions]];
+}
+
+- (void)finishHandlingBackgroundAction:(NSString *)completionKey backgroundFetchResult:(NSString *)backgroundFetchResult {
+    [[RNNotificationsStore sharedInstance] completeBackgroundAction:completionKey withBackgroundFetchResult:[RCTConvert UIBackgroundFetchResult:backgroundFetchResult]];
 }
 
 - (void)abandonPermissions {
@@ -47,14 +53,16 @@
 }
 
 - (void)setBadgeCount:(int)count {
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:count];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:count];
+    });
 }
 
 - (void)postLocalNotification:(NSDictionary *)notification withId:(NSNumber *)notificationId {
     [_notificationCenter postLocalNotification:notification withId:notificationId];
 }
 
-- (void)cancelLocalNotification:(NSString *)notificationId {
+- (void)cancelLocalNotification:(NSNumber *)notificationId {
     [_notificationCenter cancelLocalNotification:notificationId];
 }
 
@@ -78,8 +86,8 @@
     [_notificationCenter removeDeliveredNotifications:identifiers];
 }
 
-- (void)getDeliveredNotifications:(RCTResponseSenderBlock)callback {
-    [_notificationCenter getDeliveredNotifications:callback];
+- (void)getDeliveredNotifications:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    [_notificationCenter getDeliveredNotifications:resolve];
 }
 
 @end
